@@ -45,10 +45,14 @@ jobs:
         id: get_time
         run: echo "TIME=$(TZ=UTC-8 date +%m%d%H%M )" >> $GITHUB_ENV
 
-      - name: Build Kernel
+      - name: Build Kernel-With-KernelSU
         run: |
           set -x
-          CONFIG_LOCALVERSION="Gojo.V1-${{ steps.get_time.outputs.TIME }}"
+          rm -rf KernelSU
+          rm -rf drivers/kernelsu
+          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
+          latest_version_of_Kernel_SU=$(curl -s https://api.github.com/repos/tiann/KernelSU/releases/latest | jq -r '.tag_name')
+          CONFIG_LOCALVERSION="-JJK.KSU-$latest_version_of_Kernel_SU-${{ steps.get_time.outputs.TIME }}"
           export PATH=$(pwd)/clang/bin/:$PATH
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all) LOCALVERSION="$CONFIG_LOCALVERSION"
