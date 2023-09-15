@@ -52,7 +52,7 @@ jobs:
           rm -rf drivers/kernelsu
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
           latest_version_of_Kernel_SU=$(curl -s https://api.github.com/repos/tiann/KernelSU/releases/latest | jq -r '.tag_name')
-          CONFIG_LOCALVERSION="-JJK.KSU-$latest_version_of_Kernel_SU-${{ steps.get_time.outputs.TIME }}"
+          CONFIG_LOCALVERSION="-An-Unknown-M51-KSU-$latest_version_of_Kernel_SU-${{ steps.get_time.outputs.TIME }}"
           export PATH=$(pwd)/clang/bin/:$PATH
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all) LOCALVERSION="$CONFIG_LOCALVERSION"
